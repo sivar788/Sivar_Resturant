@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Culinary Hub | Modern Restaurant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-brand": "#FF6B6B", // Vibrant Coral
+              "secondary-brand": "#4ECDC4", // Seafoam Green
+              "dark-bg": "#1A1A1A",
+              "dark-card": "#2A2A2A",
+              "light-bg": "#F7F7F7",
+              "light-card": "#FFFFFF",
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              serif: ["Playfair Display", "serif"], // For headings
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* Custom scrollbar styling */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: theme("colors.light-bg");
+      }
+      .dark ::-webkit-scrollbar-track {
+        background: theme("colors.dark-bg");
+      }
+      ::-webkit-scrollbar-thumb {
+        background: theme("colors.primary-brand");
+        border-radius: 4px;
+      }
+
+      /* Basic setup for single-page routing */
+      .page-section {
+        display: none;
+        min-height: calc(100vh - 8rem); /* Adjust for header/footer */
+      }
+      .page-section.active {
+        display: block;
+      }
+      .transition-transform {
+        transition: transform 0.3s ease-in-out;
+      }
+      .menu-item-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-light-bg dark:bg-dark-bg text-gray-800 dark:text-gray-200 font-sans transition-colors duration-300"
+  >
+    <header
+      class="sticky top-0 z-50 shadow-lg bg-light-card dark:bg-dark-card backdrop-blur-md bg-opacity-90 dark:bg-opacity-90"
+    >
+      <div
+        class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4"
+      >
+        <h1
+          class="text-3xl font-serif font-bold text-primary-brand tracking-wider"
+        >
+          <a href="#home" onclick="showPage('home')">Sivar Resturant </a>
+        </h1>
+        <nav class="hidden md:flex space-x-6 lg:space-x-10 text-lg">
+          <a
+            href="#home"
+            onclick="showPage('home')"
+            class="nav-link hover:text-primary-brand transition duration-200"
+            >Home</a
+          >
+          <a
+            href="#menu"
+            onclick="showPage('menu')"
+            class="nav-link hover:text-primary-brand transition duration-200"
+            >Menu</a
+          >
+          <a
+            href="#about"
+            onclick="showPage('about')"
+            class="nav-link hover:text-primary-brand transition duration-200"
+            >About</a
+          >
+          <a
+            href="#order"
+            onclick="showPage('order')"
+            class="nav-link text-white bg-primary-brand py-1 px-4 rounded-full shadow-md hover:shadow-xl transition duration-300"
+            >Order Online</a
+          >
+          <a
+            href="#contact"
+            onclick="showPage('contact')"
+            class="nav-link hover:text-primary-brand transition duration-200"
+            >Contact</a
+          >
+          <a
+            href="#admin"
+            onclick="showPage('admin')"
+            class="nav-link hover:text-secondary-brand transition duration-200 text-sm italic"
+            >Admin</a
+          >
+        </nav>
+        <div class="flex items-center space-x-4">
+          <button
+            id="theme-toggle"
+            aria-label="Toggle Dark/Light Mode"
+            class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-dark-bg transition duration-200"
+          >
+            <svg
+              id="sun-icon"
+              class="w-6 h-6 hidden"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              ></path>
+            </svg>
+            <svg
+              id="moon-icon"
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              ></path>
+            </svg>
+          </button>
+          <button
+            id="mobile-menu-btn"
+            class="md:hidden p-2 rounded-full hover:bg-gray-200 dark:hover:bg-dark-bg transition duration-200"
+            aria-label="Open mobile menu"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <nav
+        id="mobile-menu"
+        class="hidden md:hidden bg-light-card dark:bg-dark-card border-t border-gray-200 dark:border-gray-700 py-2"
+      >
+        <a
+          href="#home"
+          onclick="showPage('home')"
+          class="block px-4 py-2 hover:bg-primary-brand hover:text-white transition duration-200"
+          >Home</a
+        >
+        <a
+          href="#menu"
+          onclick="showPage('menu')"
+          class="block px-4 py-2 hover:bg-primary-brand hover:text-white transition duration-200"
+          >Menu</a
+        >
+        <a
+          href="#about"
+          onclick="showPage('about')"
+          class="block px-4 py-2 hover:bg-primary-brand hover:text-white transition duration-200"
+          >About</a
+        >
+        <a
+          href="#order"
+          onclick="showPage('order')"
+          class="block px-4 py-2 hover:bg-primary-brand hover:text-white transition duration-200 font-bold"
+          >Order Online</a
+        >
+        <a
+          href="#contact"
+          onclick="showPage('contact')"
+          class="block px-4 py-2 hover:bg-primary-brand hover:text-white transition duration-200"
+          >Contact</a
+        >
+        <a
+          href="#admin"
+          onclick="showPage('admin')"
+          class="block px-4 py-2 hover:bg-secondary-brand hover:text-white transition duration-200 text-sm italic"
+          >Admin Dashboard</a
+        >
+      </nav>
+    </header>
+
+    <main class="min-h-screen">
+      <section id="home" class="page-section active pt-8">
+        <div
+          class="relative bg-gray-900 h-[600px] lg:h-[700px] flex items-center justify-center overflow-hidden shadow-2xl"
+        >
+          <div
+            class="absolute inset-0 bg-[url('https://picsum.photos/id/1080/1600/1000')] bg-cover bg-center opacity-70"
+          ></div>
+
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-dark-bg to-transparent opacity-90 dark:from-dark-bg dark:to-transparent dark:opacity-90"
+          ></div>
+
+          <div class="relative z-10 text-center px-4 max-w-4xl animate-fadeIn">
+            <h2
+              class="text-6xl md:text-8xl font-serif font-extrabold text-white mb-4 leading-tight tracking-tighter drop-shadow-lg"
+            >
+              Savor <span class="text-primary-brand">The Moment</span>
+            </h2>
+            <p
+              class="text-xl md:text-2xl text-gray-200 mb-10 max-w-xl mx-auto drop-shadow"
+            >
+              Experience the artistry of modern culinary innovation, crafted
+              with locally sourced, seasonal ingredients.
+            </p>
+            <div
+              class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6"
+            >
+              <button
+                onclick="alert('Simulate Reservation Form')"
+                class="bg-primary-brand text-white font-bold py-3 px-8 rounded-full text-lg shadow-xl hover:bg-secondary-brand transition duration-300 transform hover:scale-105"
+              >
+                Book A Table
+              </button>
+              <a
+                href="#order"
+                onclick="showPage('order')"
+                class="bg-white text-dark-bg font-bold py-3 px-8 rounded-full text-lg shadow-xl hover:bg-gray-200 transition duration-300 transform hover:scale-105"
+              >
+                Order Online
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="container mx-auto px-4 py-16 text-center">
+          <h3 class="text-4xl font-serif font-bold mb-4">
+            A Fresh Take on
+            <span class="text-secondary-brand">Modern Dining</span>
+          </h3>
+          <p class="max-w-3xl mx-auto text-lg text-gray-600 dark:text-gray-400">
+            Our kitchen is a testament to sustainable practices and bold
+            flavors. Every dish tells a story of the region, meticulously
+            prepared by our acclaimed chefs. Join us for an unforgettable
+            gastronomic journey.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+            <div
+              class="p-6 bg-light-card dark:bg-dark-card rounded-xl shadow-lg hover:shadow-2xl transition duration-300"
+            >
+              <span class="text-primary-brand text-4xl mb-3 block">🍴</span>
+              <h4 class="font-serif text-2xl font-semibold mb-2">
+                Seasonal Menu
+              </h4>
+              <p class="text-sm">
+                Ingredients hand-picked at their peak flavor.
+              </p>
+            </div>
+            <div
+              class="p-6 bg-light-card dark:bg-dark-card rounded-xl shadow-lg hover:shadow-2xl transition duration-300"
+            >
+              <span class="text-primary-brand text-4xl mb-3 block">✨</span>
+              <h4 class="font-serif text-2xl font-semibold mb-2">
+                Elegant Ambiance
+              </h4>
+              <p class="text-sm">
+                A setting designed for intimate conversation.
+              </p>
+            </div>
+            <div
+              class="p-6 bg-light-card dark:bg-dark-card rounded-xl shadow-lg hover:shadow-2xl transition duration-300"
+            >
+              <span class="text-primary-brand text-4xl mb-3 block">🌱</span>
+              <h4 class="font-serif text-2xl font-semibold mb-2">
+                Local Sourcing
+              </h4>
+              <p class="text-sm">Supporting our local farmers and community.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="py-16 bg-gray-100 dark:bg-gray-900">
+          <div class="container mx-auto px-4">
+            <h3 class="text-4xl font-serif font-bold text-center mb-10">
+              Peek Inside Our World
+            </h3>
+            <div class="flex overflow-x-scroll snap-x space-x-4 pb-4">
+              <img
+                class="w-64 h-64 object-cover rounded-xl shadow-lg snap-center flex-shrink-0"
+                src="https://picsum.photos/id/1040/400/400"
+                alt="Ambiance shot of the bar area"
+              />
+
+              <img
+                class="w-64 h-64 object-cover rounded-xl shadow-lg snap-center flex-shrink-0"
+                src="https://picsum.photos/id/1055/400/400"
+                alt="Close-up of a beautifully plated appetizer"
+              />
+              <img
+                class="w-64 h-64 object-cover rounded-xl shadow-lg snap-center flex-shrink-0"
+                src="https://picsum.photos/id/1070/400/400"
+                alt="Shot of a lively dining room"
+              />
+              <img
+                class="w-64 h-64 object-cover rounded-xl shadow-lg snap-center flex-shrink-0"
+                src="https://picsum.photos/id/1084/400/400"
+                alt="Shot of a dessert course"
+              />
+              <img
+                class="w-64 h-64 object-cover rounded-xl shadow-lg snap-center flex-shrink-0"
+                src="https://picsum.photos/id/1040/400/400"
+                alt="Ambiance shot of the bar area"
+              />
+            </div>
+            <p class="text-center mt-6 text-gray-600 dark:text-gray-400">
+              Scroll to see more...
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="menu" class="page-section pt-16 container mx-auto px-4">
+        <h2 class="text-5xl font-serif font-extrabold text-center mb-4">
+          Our Culinary <span class="text-primary-brand">Masterpieces</span>
+        </h2>
+        <p
+          class="text-center text-lg max-w-2xl mx-auto mb-12 text-gray-600 dark:text-gray-400"
+        >
+          A carefully curated selection of modern classics and innovative
+          seasonal dishes.
+        </p>
+
+        <div
+          class="flex flex-col md:flex-row justify-between items-center mb-10 space-y-4 md:space-y-0"
+        >
+          <input
+            type="text"
+            id="menu-search"
+            placeholder="Search menu items..."
+            class="w-full md:w-1/3 p-3 border-2 border-gray-300 dark:border-dark-card rounded-lg focus:ring-primary-brand focus:border-primary-brand dark:bg-dark-card dark:text-white transition duration-300"
+            onkeyup="filterMenu()"
+          />
+          <div class="flex space-x-3">
+            <button
+              class="menu-filter-btn text-sm py-2 px-4 rounded-full border border-primary-brand text-primary-brand hover:bg-primary-brand hover:text-white transition duration-200 active-filter"
+              data-tag="all"
+              onclick="filterMenu('all')"
+            >
+              All
+            </button>
+            <button
+              class="menu-filter-btn text-sm py-2 px-4 rounded-full border border-gray-400 dark:border-gray-500 hover:bg-gray-200 dark:hover:bg-dark-card transition duration-200"
+              data-tag="vegetarian"
+              onclick="filterMenu('vegetarian')"
+            >
+              🌱 Veggie
+            </button>
+            <button
+              class="menu-filter-btn text-sm py-2 px-4 rounded-full border border-gray-400 dark:border-gray-500 hover:bg-gray-200 dark:hover:bg-dark-card transition duration-200"
+              data-tag="vegan"
+              onclick="filterMenu('vegan')"
+            >
+              🌿 Vegan
+            </button>
+            <button
+              class="menu-filter-btn text-sm py-2 px-4 hidden sm:inline-block rounded-full border border-gray-400 dark:border-gray-500 hover:bg-gray-200 dark:hover:bg-dark-card transition duration-200"
+              data-tag="gluten-free"
+              onclick="filterMenu('gluten-free')"
+            >
+              🌾 GF
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="menu-items-container"
+          class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-12"
+        >
+          <div>
+            <h3
+              class="text-3xl font-serif font-bold text-primary-brand mb-6 border-b-2 pb-2 border-primary-brand/50"
+            >
+              Appetizers
+            </h3>
+            <div class="space-y-8">
+              <div
+                class="menu-item-card flex items-start space-x-6 p-4 rounded-xl bg-light-card dark:bg-dark-card shadow-lg transition-transform"
+                data-tags="gluten-free"
+              >
+                <img
+                  class="w-24 h-24 object-cover rounded-lg flex-shrink-0 shadow-md"
+                  src="https://picsum.photos/id/21/200/200"
+                  alt="Image of Salmon Ceviche"
+                />
+                <div class="flex-grow">
+                  <div class="flex justify-between items-start">
+                    <h4 class="text-xl font-serif font-semibold">
+                      Pacific Salmon Ceviche
+                    </h4>
+                    <span class="text-primary-brand text-xl font-bold ml-4"
+                      >$18.00</span
+                    >
+                  </div>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-2">
+                    Diced salmon marinated in a lime-passion fruit dressing,
+                    cilantro, chili, and sweet potato crisps.
+                  </p>
+                  <div class="flex space-x-2">
+                    <span
+                      class="text-xs bg-green-500/20 text-green-700 dark:text-green-300 py-1 px-2 rounded-full font-medium"
+                      >GF</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="menu-item-card flex items-start space-x-6 p-4 rounded-xl bg-light-card dark:bg-dark-card shadow-lg transition-transform"
+                data-tags="vegetarian vegan gluten-free"
+              >
+                <img
+                  class="w-24 h-24 object-cover rounded-lg flex-shrink-0 shadow-md"
+                  src="https://picsum.photos/id/23/200/200"
+                  alt="Image of Roasted Beetroot Salad"
+                />
+                <div class="flex-grow">
+                  <div class="flex justify-between items-start">
+                    <h4 class="text-xl font-serif font-semibold">
+                      Roasted Beetroot Salad
+                    </h4>
+                    <span class="text-primary-brand text-xl font-bold ml-4"
+                      >$14.00</span
+                    >
+                  </div>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-2">
+                    Local rainbow beets, watercress, candied walnuts, and a
+                    light citrus vinaigrette.
+                  </p>
+                  <div class="flex space-x-2">
+                    <span
+                      class="text-xs bg-green-500/20 text-green-700 dark:text-green-300 py-1 px-2 rounded-full font-medium"
+                      >🌱 Veggie</span
+                    >
+                    <span
+                      class="text-xs bg-teal-500/20 text-teal-700 dark:text-teal-300 py-1 px-2 rounded-full font-medium"
+                      >🌿 Vegan</span
+                    >
+                    <span
+                      class="text-xs bg-green-500/20 text-green-700 dark:text-green-300 py-1 px-2 rounded-full font-medium"
+                      >GF</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3
+              class="text-3xl font-serif font-bold text-primary-brand mb-6 border-b-2 pb-2 border-primary-brand/50"
+            >
+              Main Courses
+            </h3>
+            <div class="space-y-8">
+              <div
+                class="menu-item-card flex items-start space-x-6 p-4 rounded-xl bg-light-card dark:bg-dark-card shadow-lg transition-transform"
+                data-tags=""
+              >
+                <img
+                  class="w-24 h-24 object-cover rounded-lg flex-shrink-0 shadow-md"
+                  src="https://picsum.photos/id/20/200/200"
+                  alt="Image of Filet Mignon"
+                />
+                <div class="flex-grow">
+                  <div class="flex justify-between items-start">
+                    <h4 class="text-xl font-serif font-semibold">
+                      Grass-Fed Filet Mignon
+                    </h4>
+                    <span class="text-primary-brand text-xl font-bold ml-4"
+                      >$42.00</span
+                    >
+                  </div>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-2">
+                    8oz prime cut, served with truffle mash, asparagus, and a
+                    red wine reduction.
+                  </p>
+                  <div class="flex space-x-2">
+                    <span
+                      class="text-xs bg-red-500/20 text-red-700 dark:text-red-300 py-1 px-2 rounded-full font-medium"
+                      >Chef's Special</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="menu-item-card flex items-start space-x-6 p-4 rounded-xl bg-light-card dark:bg-dark-card shadow-lg transition-transform"
+                data-tags="vegetarian gluten-free"
+              >
+                <img
+                  class="w-24 h-24 object-cover rounded-lg flex-shrink-0 shadow-md"
+                  src="https://picsum.photos/id/1083/200/200"
+                  alt="Image of Mushroom Risotto"
+                />
+                <div class="flex-grow">
+                  <div class="flex justify-between items-start">
+                    <h4 class="text-xl font-serif font-semibold">
+                      Wild Mushroom Risotto
+                    </h4>
+                    <span class="text-primary-brand text-xl font-bold ml-4"
+                      >$28.00</span
+                    >
+                  </div>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-2">
+                    Arborio rice slowly cooked with mixed wild mushrooms,
+                    parmesan cheese, and a hint of white truffle oil.
+                  </p>
+                  <div class="flex space-x-2">
+                    <span
+                      class="text-xs bg-green-500/20 text-green-700 dark:text-green-300 py-1 px-2 rounded-full font-medium"
+                      >🌱 Veggie</span
+                    >
+                    <span
+                      class="text-xs bg-green-500/20 text-green-700 dark:text-green-300 py-1 px-2 rounded-full font-medium"
+                      >GF</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-16 pb-16">
+          <a
+            href="#order"
+            onclick="showPage('order')"
+            class="inline-block bg-secondary-brand text-white font-bold py-3 px-8 rounded-full text-lg shadow-xl hover:bg-primary-brand transition duration-300 transform hover:scale-105"
+          >
+            Ready to Order? View All Items
+          </a>
+        </div>
+      </section>
+
+      <section id="about" class="page-section pt-16 container mx-auto px-4">
+        <h2 class="text-5xl font-serif font-extrabold text-center mb-12">
+          Our <span class="text-secondary-brand">Story</span>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
+          <div>
+            <h3 class="text-4xl font-serif font-bold mb-4">
+              From Farm to <span class="text-primary-brand">Fine Dining</span>
+            </h3>
+            <p class="text-lg mb-6 text-gray-600 dark:text-gray-400">
+              The Culinary Hub was founded in 2018 with a simple vision: to
+              bridge the gap between high-end gastronomic techniques and the
+              simple, honest flavors of local produce. We believe that
+              exceptional food starts with exceptional ingredients.
+            </p>
+            <p class="text-md italic text-gray-500 dark:text-gray-400">
+              "Culinary artistry is about respect—respect for the ingredient,
+              the craft, and the guest." - Chef Elena Rodriguez
+            </p>
+          </div>
+          <div class="relative">
+            <img
+              class="w-full h-80 object-cover rounded-xl shadow-2xl transition transform hover:scale-[1.01] duration-500"
+              src="https://picsum.photos/id/196/800/600"
+              alt="Chef preparing a dish"
+            />
+
+            <div
+              class="absolute -bottom-4 -left-4 w-1/3 h-1/3 bg-secondary-brand/60 rounded-xl -z-10"
+            ></div>
+          </div>
+        </div>
+
+        <div
+          class="bg-primary-brand/10 dark:bg-dark-card p-10 rounded-xl shadow-inner mb-16"
+        >
+          <h3 class="text-3xl font-serif font-bold text-center mb-8">
+            Our Core <span class="text-primary-brand">Values</span>
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+            <div>
+              <span class="text-secondary-brand text-4xl mb-3 block">♻️</span>
+              <h4 class="font-semibold text-xl mb-2">Sustainability</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                Minimizing waste and maximizing local, ethical sourcing.
+              </p>
+            </div>
+            <div>
+              <span class="text-secondary-brand text-4xl mb-3 block">🤝</span>
+              <h4 class="font-semibold text-xl mb-2">Community</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                Partnering with family farms and local artisans.
+              </p>
+            </div>
+            <div>
+              <span class="text-secondary-brand text-4xl mb-3 block">🎨</span>
+              <h4 class="font-semibold text-xl mb-2">Innovation</h4>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                Pushing culinary boundaries while honoring tradition.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="text-4xl font-serif font-bold text-center mb-10">
+          Meet The <span class="text-primary-brand">Team</span>
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 pb-16">
+          <div
+            class="text-center p-6 bg-light-card dark:bg-dark-card rounded-xl shadow-lg hover:shadow-2xl transition duration-300"
+          >
+            <img
+              class="w-32 h-32 object-cover rounded-full mx-auto mb-4 border-4 border-primary-brand/50 shadow-md"
+              src="https://picsum.photos/id/64/200/200"
+              alt="Portrait of Chef Elena Rodriguez"
+            />
+            <h4 class="text-xl font-serif font-semibold">Elena Rodriguez</h4>
+            <p class="text-secondary-brand font-medium mb-3">
+              Head Chef & Founder
+            </p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Master of modern European cuisine with a flair for South American
+              spices.
+            </p>
+          </div>
+          <div
+            class="text-center p-6 bg-light-card dark:bg-dark-card rounded-xl shadow-lg hover:shadow-2xl transition duration-300"
+          >
+            <img
+              class="w-32 h-32 object-cover rounded-full mx-auto mb-4 border-4 border-primary-brand/50 shadow-md"
+              src="https://picsum.photos/id/1011/200/200"
+              alt="Portrait of Sommelier Ben Carter"
+            />
+            <h4 class="text-xl font-serif font-semibold">Ben Carter</h4>
+            <p class="text-secondary-brand font-medium mb-3">Head Sommelier</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Curates our award-winning wine list, focusing on organic and
+              biodynamic vintages.
+            </p>
+          </div>
+          <div
+            class="text-center p-6 bg-light-card dark:bg-dark-card rounded-xl shadow-lg hover:shadow-2xl transition duration-300"
+          >
+            <img
+              class="w-32 h-32 object-cover rounded-full mx-auto mb-4 border-4 border-primary-brand/50 shadow-md"
+              src="https://picsum.photos/id/1027/200/200"
+              alt="Portrait of General Manager Maria Kim"
+            />
+            <h4 class="text-xl font-serif font-semibold">Maria Kim</h4>
+            <p class="text-secondary-brand font-medium mb-3">General Manager</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              Ensures every guest experience is seamless, welcoming, and
+              exceptional.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="page-section pt-16 container mx-auto px-4">
+        <h2 class="text-5xl font-serif font-extrabold text-center mb-12">
+          Get In <span class="text-primary-brand">Touch</span>
+        </h2>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 pb-16">
+          <div class="space-y-8">
+            <h3 class="text-3xl font-serif font-bold mb-4">Visit Us or Call</h3>
+            <div class="space-y-6">
+              <div class="flex items-start space-x-4">
+                <span class="text-primary-brand text-3xl mt-1">📍</span>
+                <div>
+                  <h4 class="font-semibold text-xl">Address</h4>
+                  <p class="text-gray-600 dark:text-gray-400">
+                    123 Culinary Lane, Metropolis, CA 90210
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start space-x-4">
+                <span class="text-primary-brand text-3xl mt-1">📞</span>
+                <div>
+                  <h4 class="font-semibold text-xl">Phone</h4>
+                  <a
+                    href="tel:+15551234567"
+                    class="text-secondary-brand hover:underline"
+                    >(555) 123-4567</a
+                  >
+                </div>
+              </div>
+              <div class="flex items-start space-x-4">
+                <span class="text-primary-brand text-3xl mt-1">📧</span>
+                <div>
+                  <h4 class="font-semibold text-xl">Email</h4>
+                  <a
+                    href="mailto:reservations@theculinaryhub.com"
+                    class="text-secondary-brand hover:underline"
+                    >reservations@theculinaryhub.com</a
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="w-full h-80 bg-gray-300 dark:bg-gray-700 rounded-xl shadow-lg overflow-hidden"
+            >
+              <iframe
+                class="w-full h-full border-0"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.250520641049!2d144.9630576153177!3d-37.81725797975142!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4e13!4m8!3e6!4m0!4m5!1s0x6ad642b78114f08f%3A0x777083040f1a9a83!2sFederation%20Square%2C%20Melbourne%20VIC%2C%20Australia!3m2!1d-37.817258!2d144.9652466!5e0!3m2!1sen!2sus!4v1628000000000!5m2!1sen!2sus"
+                allowfullscreen=""
+                loading="lazy"
+                aria-label="Location of The Culinary Hub on Google Maps (simulated address: Federation Square, Melbourne)"
+              >
+              </iframe>
+            </div>
+          </div>
+
+          <div
+            class="p-8 bg-light-card dark:bg-dark-card rounded-xl shadow-2xl"
+          >
+            <h3 class="text-3xl font-serif font-bold mb-6">
+              Send Us a Message
+            </h3>
+            <form onsubmit="alert('Message Sent Successfully!'); return false;">
+              <div class="mb-4">
+                <label for="name" class="block text-sm font-medium mb-1"
+                  >Name</label
+                >
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-primary-brand focus:border-primary-brand dark:bg-dark-bg transition duration-200"
+                  aria-label="Your full name"
+                />
+              </div>
+              <div class="mb-4">
+                <label for="email" class="block text-sm font-medium mb-1"
+                  >Email</label
+                >
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-primary-brand focus:border-primary-brand dark:bg-dark-bg transition duration-200"
+                  aria-label="Your email address"
+                />
+              </div>
+              <div class="mb-4">
+                <label for="subject" class="block text-sm font-medium mb-1"
+                  >Subject</label
+                >
+                <input
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  required
+                  class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-primary-brand focus:border-primary-brand dark:bg-dark-bg transition duration-200"
+                  aria-label="Subject of your message"
+                />
+              </div>
+              <div class="mb-6">
+                <label for="message" class="block text-sm font-medium mb-1"
+                  >Message</label
+                >
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="4"
+                  required
+                  class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-primary-brand focus:border-primary-brand dark:bg-dark-bg transition duration-200"
+                  aria-label="Your message"
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                class="w-full bg-primary-brand text-white font-bold py-3 rounded-lg text-lg shadow-md hover:bg-secondary-brand transition duration-300"
+              >
+                Submit Message
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="order" class="page-section pt-16 container mx-auto px-4">
+        <h2 class="text-5xl font-serif font-extrabold text-center mb-12">
+          Online <span class="text-primary-brand">Ordering</span>
+        </h2>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 pb-16">
+          <div class="lg:col-span-2">
+            <h3 class="text-3xl font-serif font-bold mb-6 border-b pb-2">
+              All Items
+            </h3>
+            <div id="order-menu-container" class="space-y-6">
+              <div
+                class="order-item flex items-center p-4 bg-light-card dark:bg-dark-card rounded-xl shadow-md"
+              >
+                <img
+                  class="w-16 h-16 object-cover rounded-md mr-4"
+                  src="https://picsum.photos/id/20/100/100"
+                  alt="Filet Mignon"
+                />
+                <div class="flex-grow">
+                  <h4 class="font-semibold text-lg">Grass-Fed Filet Mignon</h4>
+                  <p class="text-sm text-primary-brand font-bold">$42.00</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400">
+                    8oz cut, truffle mash, red wine reduction.
+                  </p>
+                </div>
+                <button
+                  onclick="addToCart({id: 1, name: 'Filet Mignon', price: 42.00})"
+                  class="bg-primary-brand text-white text-sm py-2 px-4 rounded-full hover:bg-secondary-brand transition duration-200"
+                >
+                  Add
+                </button>
+              </div>
+              <div
+                class="order-item flex items-center p-4 bg-light-card dark:bg-dark-card rounded-xl shadow-md"
+              >
+                <img
+                  class="w-16 h-16 object-cover rounded-md mr-4"
+                  src="https://picsum.photos/id/1083/100/100"
+                  alt="Mushroom Risotto"
+                />
+                <div class="flex-grow">
+                  <h4 class="font-semibold text-lg">Wild Mushroom Risotto</h4>
+                  <p class="text-sm text-primary-brand font-bold">$28.00</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400">
+                    Truffle oil, parmesan. (Vegetarian)
+                  </p>
+                </div>
+                <button
+                  onclick="addToCart({id: 2, name: 'Mushroom Risotto', price: 28.00})"
+                  class="bg-primary-brand text-white text-sm py-2 px-4 rounded-full hover:bg-secondary-brand transition duration-200"
+                >
+                  Add
+                </button>
+              </div>
+              <div
+                class="order-item flex items-center p-4 bg-light-card dark:bg-dark-card rounded-xl shadow-md"
+              >
+                <img
+                  class="w-16 h-16 object-cover rounded-md mr-4"
+                  src="https://picsum.photos/id/21/100/100"
+                  alt="Salmon Ceviche"
+                />
+                <div class="flex-grow">
+                  <h4 class="font-semibold text-lg">Pacific Salmon Ceviche</h4>
+                  <p class="text-sm text-primary-brand font-bold">$18.00</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400">
+                    Lime-passion fruit dressing. (GF)
+                  </p>
+                </div>
+                <button
+                  onclick="addToCart({id: 3, name: 'Salmon Ceviche', price: 18.00})"
+                  class="bg-primary-brand text-white text-sm py-2 px-4 rounded-full hover:bg-secondary-brand transition duration-200"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="bg-light-card dark:bg-dark-card p-6 rounded-xl shadow-2xl sticky top-24 h-fit"
+          >
+            <h3 class="text-3xl font-serif font-bold mb-6 border-b pb-2">
+              Your Order
+            </h3>
+            <div id="cart-items" class="space-y-4 min-h-[100px] mb-6">
+              <p
+                class="text-gray-500 dark:text-gray-400 italic"
+                id="empty-cart-message"
+              >
+                Your cart is empty.
+              </p>
+            </div>
+
+            <div class="border-t pt-4 space-y-2">
+              <div class="flex justify-between font-medium">
+                <span>Subtotal:</span>
+                <span id="cart-subtotal">$0.00</span>
+              </div>
+              <div
+                class="flex justify-between text-sm text-gray-600 dark:text-gray-400"
+              >
+                <span>Tax (8%):</span>
+                <span id="cart-tax">$0.00</span>
+              </div>
+              <div class="flex justify-between font-bold text-xl border-t pt-2">
+                <span>Total:</span>
+                <span id="cart-total" class="text-primary-brand">$0.00</span>
+              </div>
+            </div>
+
+            <button
+              onclick="checkout()"
+              class="mt-6 w-full bg-secondary-brand text-white font-bold py-3 rounded-lg text-lg shadow-xl hover:bg-primary-brand transition duration-300"
+            >
+              Proceed to Checkout
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="admin" class="page-section pt-16 container mx-auto px-4">
+        <h2 class="text-5xl font-serif font-extrabold text-center mb-12">
+          Admin <span class="text-secondary-brand">Dashboard</span>
+        </h2>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 pb-16">
+          <nav
+            class="lg:col-span-1 bg-light-card dark:bg-dark-card p-6 rounded-xl shadow-2xl h-fit"
+          >
+            <h3 class="text-2xl font-serif font-bold mb-4 border-b pb-2">
+              Management
+            </h3>
+            <ul class="space-y-2 text-lg">
+              <li>
+                <a
+                  href="#"
+                  class="block py-2 px-3 rounded-lg bg-primary-brand/20 text-primary-brand font-medium hover:bg-primary-brand/40 transition duration-200"
+                  >📋 Menu Items</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block py-2 px-3 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-bg transition duration-200"
+                  >📦 Orders (4 New)</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block py-2 px-3 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-bg transition duration-200"
+                  >👥 User Data</a
+                >
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block py-2 px-3 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-bg transition duration-200"
+                  >📊 Reports</a
+                >
+              </li>
+              <li class="pt-4 border-t mt-4">
+                <a
+                  href="#home"
+                  onclick="showPage('home')"
+                  class="block py-2 px-3 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-red-100 dark:hover:bg-dark-bg transition duration-200"
+                  >🔒 Logout (Go to Home)</a
+                >
+              </li>
+            </ul>
+          </nav>
+
+          <div class="lg:col-span-3 space-y-8">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div class="p-6 bg-primary-brand/20 rounded-xl shadow-lg">
+                <p class="text-sm font-medium text-primary-brand">
+                  Today's Revenue
+                </p>
+                <p class="text-3xl font-bold mt-1 text-primary-brand">
+                  $1,452.89
+                </p>
+              </div>
+              <div class="p-6 bg-secondary-brand/20 rounded-xl shadow-lg">
+                <p class="text-sm font-medium text-secondary-brand">
+                  New Orders
+                </p>
+                <p class="text-3xl font-bold mt-1 text-secondary-brand">4</p>
+              </div>
+              <div
+                class="p-6 bg-gray-300/20 dark:bg-dark-card/50 rounded-xl shadow-lg"
+              >
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Total Menu Items
+                </p>
+                <p class="text-3xl font-bold mt-1">28</p>
+              </div>
+            </div>
+
+            <div
+              class="bg-light-card dark:bg-dark-card p-6 rounded-xl shadow-2xl"
+            >
+              <h3 class="text-2xl font-serif font-bold mb-4">
+                Manage Menu Items
+              </h3>
+              <table
+                class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+              >
+                <thead class="bg-gray-50 dark:bg-dark-bg">
+                  <tr>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    >
+                      Dish
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    >
+                      Category
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    >
+                      Price
+                    </th>
+                    <th
+                      class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider"
+                    >
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                  <tr class="hover:bg-gray-50 dark:hover:bg-dark-bg/50">
+                    <td class="px-6 py-4 whitespace-nowrap">Filet Mignon</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Mains</td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-primary-brand font-bold"
+                    >
+                      $42.00
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                    >
+                      <button
+                        class="text-secondary-brand hover:text-primary-brand mr-3"
+                      >
+                        Edit
+                      </button>
+                      <button class="text-red-600 hover:text-red-900">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-gray-50 dark:hover:bg-dark-bg/50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      Mushroom Risotto
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">Mains</td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-primary-brand font-bold"
+                    >
+                      $28.00
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                    >
+                      <button
+                        class="text-secondary-brand hover:text-primary-brand mr-3"
+                      >
+                        Edit
+                      </button>
+                      <button class="text-red-600 hover:text-red-900">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button
+                class="mt-4 bg-secondary-brand text-white py-2 px-4 rounded-lg hover:bg-primary-brand transition duration-200 text-sm"
+              >
+                + Add New Item
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-dark-card dark:bg-black text-gray-400 py-12">
+      <div class="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div>
+          <h4 class="text-2xl font-serif font-bold text-primary-brand mb-4">
+            Sivar Restaurant
+          </h4>
+          <p class="text-sm mb-2">123 Gullan, Slemany</p>
+          <p class="text-sm mb-2">
+            <a href="tel:+15551234567" class="hover:text-white"
+              >+964 771 5998880 </a
+            >
+          </p>
+          <p class="text-sm mb-4">
+            <a href="mailto:info@theculinaryhub.com" class="hover:text-white"
+              >sivarwshyar1982@gmail.com</a
+            >
+          </p>
+          <div class="flex space-x-4">
+            <a
+              href="#"
+              aria-label="Facebook"
+              class="hover:text-white transition duration-200"
+            >
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879v-6.988h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.77l-.44 2.891h-2.33v6.988C18.343 21.128 22 16.991 22 12c0-5.523-4.477-10-10-10z"
+                />
+              </svg>
+            </a>
+            <a
+              href="#"
+              aria-label="Instagram"
+              class="hover:text-white transition duration-200"
+            >
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 2.163c3.204 0 3.584.012 4.85.07c3.27.155 4.908 1.954 5.063 5.063.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.155 3.27-1.954 4.908-5.063 5.063-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-3.27-.155-4.908-1.954-5.063-5.063-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.155-3.27 1.954-4.908 5.063-5.063 1.266-.058 1.646-.07 4.85-.07zm0 2.137c-3.178 0-3.583.013-4.833.071-2.955.14-4.22 1.516-4.364 4.364-.058 1.25-.07 1.655-.07 4.833s.013 3.583.07 4.833c.144 2.848 1.61 4.22 4.364 4.364 1.25.058 1.655.07 4.833.07s3.583-.013 4.833-.07c2.848-.144 4.22-1.61 4.364-4.364.058-1.25.07-1.655.07-4.833s-.013-3.583-.07-4.833c-.144-2.848-1.61-4.22-4.364-4.364-1.25-.058-1.655-.07-4.833-.07zm0 1.989A6.702 6.702 0 1012 18.895 6.702 6.702 0 0012 4.288zm0 2.137A4.566 4.566 0 1112 16.634 4.566 4.566 0 0112 6.425zm6.734-.343a1.2 1.2 0 100 2.4 1.2 1.2 0 000-2.4z"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-xl font-bold text-white mb-4">Quick Links</h4>
+          <ul class="space-y-2">
+            <li>
+              <a
+                href="#menu"
+                onclick="showPage('menu')"
+                class="text-sm hover:text-primary-brand transition duration-200"
+                >Our Menu</a
+              >
+            </li>
+            <li>
+              <a
+                href="#about"
+                onclick="showPage('about')"
+                class="text-sm hover:text-primary-brand transition duration-200"
+                >Our Story</a
+              >
+            </li>
+            <li>
+              <a
+                href="#order"
+                onclick="showPage('order')"
+                class="text-sm hover:text-primary-brand transition duration-200"
+                >Online Ordering</a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                onclick="alert('Simulated Reservation Link')"
+                class="text-sm hover:text-primary-brand transition duration-200"
+                >Reservations</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xl font-bold text-white mb-4">Hours</h4>
+          <ul class="space-y-2 text-sm">
+            <li>**Mon - Thu:** 11:00 AM - 10:00 PM</li>
+            <li>**Fri - Sat:** 11:00 AM - 11:00 PM</li>
+            <li>**Sunday:** 10:00 AM - 9:00 PM</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xl font-bold text-white mb-4">Newsletter</h4>
+          <p class="text-sm mb-4">
+            Join our mailing list for updates & special offers.
+          </p>
+          <form onsubmit="alert('Subscribed!'); return false;">
+            <input
+              type="email"
+              placeholder="Your Email"
+              class="w-full p-3 rounded-lg bg-gray-700 border-0 focus:ring-primary-brand focus:border-primary-brand text-white text-sm mb-3"
+            />
+            <button
+              type="submit"
+              class="w-full bg-secondary-brand text-white py-2 rounded-lg text-sm hover:bg-primary-brand transition duration-200"
+            >
+              Subscribe
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div
+        class="container mx-auto px-4 border-t border-gray-700 mt-8 pt-8 text-center"
+      >
+        <p class="text-sm">
+          &copy; 2025 The Sivar Resturant . All Rights Reserved.❤️
+        </p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
